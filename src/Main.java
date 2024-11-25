@@ -24,11 +24,19 @@ public class Main {
         graf.addEdge(5511,500);
         graf.addEdge(99,500,5);
 
-    //    graf.printGraph();
+        graf.printGraph();
+
+        graf.removeEdge(66,55);
+        graf.removeEdge(66,88);
+        graf.removeVertex(66);
+
+        System.out.println();
+        System.out.println();
+        graf.printGraph();
 
       //  System.out.println(graf.neighbors(77));
 //        System.out.println(graf.incidentEdges(77));
-        System.out.println(graf.areAdjacent(77, 55));
+        //System.out.println(graf.areAdjacent(77, 55));
 
 
     }
