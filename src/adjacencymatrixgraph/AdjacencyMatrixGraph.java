@@ -196,9 +196,9 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
     @Override
     public void removeVertex(V v) {
         assert vertices.containsKey(v);
-        //SER IKKE RIGTIG UD, måske er det rigtig, idk. 
         int row = vertices.get(v); // Get the row index from vertices
         for (int i = 0; i < matrixCapacity; i++) {
+            //Tjekker om der kan slettes
             assert matrix[row][i] == null : "Matrix element at [" + row + "][" + i + "] is not null";
         }
 
