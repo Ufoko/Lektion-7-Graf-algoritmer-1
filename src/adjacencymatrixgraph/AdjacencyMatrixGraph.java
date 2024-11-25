@@ -194,6 +194,7 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
             }
 
         vertices.remove(v);
+            matrixSize--;
     }
 
     /**
