@@ -1,6 +1,7 @@
 package graphalgorithms;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GraphAlgorithms {
     public static void main(String[] args) {
@@ -52,20 +53,21 @@ public class GraphAlgorithms {
         System.out.println(dijkstra(g, 123));
         System.out.println();
     }
+
     /**
      * Return true if the graph has a path between the specified vertices.
      * Throw exception if the vertices are not in the graph.
      */
     private static <V> boolean hasGraphPath(Graph<V> graph, V v1, V v2) {
-        if(graph.vertices().contains(v1) || graph.vertices().contains(v2)) throw new NoSuchElementException();
-        return dfs(graph,v1).contains(v2);
+        if (!graph.vertices().contains(v1) || !graph.vertices().contains(v2)) throw new NoSuchElementException();
+        return dfs(graph, v1).contains(v2);
     }
 
     /**
      * Return true if the graph is connected, otherwise false.
      */
     public static <V> boolean isGraphConnected(Graph<V> graph) {
-        int dfsSize = dfs(graph,graph.vertices().getFirst()).size();
+        int dfsSize = dfs(graph, graph.vertices().getFirst()).size();
         int graphSize = graph.vertices().size();
 
         return dfsSize == graphSize;
@@ -77,15 +79,15 @@ public class GraphAlgorithms {
      * Throw exception if the vertex is not in the graph.
      */
     public static <V> List<V> dfs(Graph<V> graph, V v) {
-        if(!graph.vertices().contains(v)) throw new NoSuchElementException();
-      return  dfs(graph,v,new ArrayList<>());
+        if (!graph.vertices().contains(v)) throw new NoSuchElementException();
+        return dfs(graph, v, new ArrayList<>());
     }
 
-    private static <V> List<V> dfs(Graph<V> graph, V v, List<V> visited){
+    private static <V> List<V> dfs(Graph<V> graph, V v, List<V> visited) {
         visited.add(v);
         for (V neighbor : graph.neighbors(v)) {
-            if(!visited.contains(neighbor)){
-                return dfs(graph,neighbor,visited);
+            if (!visited.contains(neighbor)) {
+                return dfs(graph, neighbor, visited);
             }
         }
         return visited;
@@ -98,14 +100,14 @@ public class GraphAlgorithms {
      * Throw exception if the vertex is not in the graph.
      */
     public static <V> List<V> dfsStack(Graph<V> graph, V v) {
-        if(!graph.vertices().contains(v)) throw new NoSuchElementException();
+        if (!graph.vertices().contains(v)) throw new NoSuchElementException();
         List<V> finalList = new ArrayList<>();
         List<V> stackList = new ArrayList<>();
 
         stackList.addLast(v);
 
-        while (!stackList.isEmpty()){
-            V curElement= stackList.getLast();
+        while (!stackList.isEmpty()) {
+            V curElement = stackList.getLast();
             stackList.removeLast();
             hihihuhu(graph, finalList, curElement, stackList);
         }
@@ -119,14 +121,14 @@ public class GraphAlgorithms {
      * Throw exception if the vertex is not in the graph.
      */
     public static <V> List<V> bfs(Graph<V> graph, V v) {
-        if(!graph.vertices().contains(v)) throw new NoSuchElementException();
+        if (!graph.vertices().contains(v)) throw new NoSuchElementException();
         List<V> finalList = new ArrayList<>();
         List<V> stackList = new ArrayList<>();
 
         stackList.addLast(v);
 
-        while (!stackList.isEmpty()){
-            V curElement= stackList.getFirst();
+        while (!stackList.isEmpty()) {
+            V curElement = stackList.getFirst();
             stackList.removeFirst();
             hihihuhu(graph, finalList, curElement, stackList);
         }
@@ -135,11 +137,11 @@ public class GraphAlgorithms {
     }
 
     private static <V> void hihihuhu(Graph<V> graph, List<V> finalList, V curElement, List<V> stackList) {
-        if(!finalList.contains(curElement)){
+        if (!finalList.contains(curElement)) {
             finalList.add(curElement);
 
             for (V neighbor : graph.neighbors(curElement)) {
-                if(!finalList.contains(neighbor)){
+                if (!finalList.contains(neighbor)) {
                     stackList.addFirst(neighbor);
                 }
             }
@@ -150,8 +152,46 @@ public class GraphAlgorithms {
      * Return a minimum spanning tree (MST).
      */
     public static <V> List<Edge<V>> mst(Graph<V> graph) {
-        // TODO
-        return null;
+
+
+        List<LinkedHashSet<V>> CSets = new ArrayList<>();
+
+        for (V vertex : graph.vertices()) {
+            LinkedHashSet<V> set = new LinkedHashSet<>();
+            set.add(vertex);
+            CSets.add(set);
+        }
+
+
+        Queue<Edge<V>> queue = new PriorityQueue<Edge<V>>((Edge<V> e1, Edge<V> e2) -> e1.getWeight() - e2.getWeight());
+        queue.addAll(graph.edges());
+
+        List<Edge<V>> bestTree = new ArrayList<>();
+        while (bestTree.size() < graph.vertices().size() - 1) {
+            Edge<V> element = queue.poll();
+            V vertexU = element.getU();
+            V vertexV = element.getV();
+            Set tas = new LinkedHashSet();
+            Set sat = new LinkedHashSet();
+            for (LinkedHashSet<V> cSet : CSets) {
+                if (cSet.contains(vertexU)) {
+                    tas = cSet;
+                }
+                if (cSet.contains(vertexV)) {
+                    sat = cSet;
+                }
+            }
+            if (!tas.equals(sat)) {
+                bestTree.add(element);
+                tas.addAll(sat);
+                CSets.remove(sat);
+            }
+
+
+        }
+
+
+        return bestTree;
     }
 
     /**
@@ -160,7 +200,34 @@ public class GraphAlgorithms {
      * from the specified vertex v to the vertex in the pair.
      */
     public static <V> Map<V, Integer> dijkstra(Graph<V> graph, V v) {
-        // TODO
-        return null;
+        Map<V, Integer> D = new HashMap<>();
+        for (V vertex : graph.vertices()) {
+            D.put(vertex, Integer.MAX_VALUE);
+        }
+        D.put(v, 0);
+
+        Queue<V> Q = new PriorityQueue<V>((V a, V b) -> D.get(a) - D.get(b));
+        Q.addAll(graph.vertices());
+
+        while (!Q.isEmpty()) {
+            V u = Q.poll();
+            for (V z : graph.neighbors(u)) {
+                if (Q.contains(z)) {
+                    int weightOfEdge = 0;
+                    for (Edge<V> incidentEdge : graph.incidentEdges(u)) {
+                        if (incidentEdge.getU().equals(z)) weightOfEdge = incidentEdge.getWeight();
+                        if (incidentEdge.getV().equals(z)) weightOfEdge = incidentEdge.getWeight();
+                    }
+                    if (D.get(u) + weightOfEdge < D.get(z)) {
+                        D.put(z, D.get(u) + weightOfEdge);
+                    }
+
+
+                }
+            }
+
+        }
+
+        return D;
     }
 }
