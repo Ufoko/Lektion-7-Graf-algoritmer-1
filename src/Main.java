@@ -24,7 +24,11 @@ public class Main {
         graf.addEdge(5511,500);
         graf.addEdge(99,500,5);
 
-        graf.printGraph();
+    //    graf.printGraph();
+
+      //  System.out.println(graf.neighbors(77));
+//        System.out.println(graf.incidentEdges(77));
+        System.out.println(graf.areAdjacent(77, 55));
 
 
     }

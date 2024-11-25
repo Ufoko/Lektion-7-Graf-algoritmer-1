@@ -62,7 +62,7 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
            }
         }
 
-        return null;
+        return neighbourList;
     }
 
     private V getVerticie(int index){
