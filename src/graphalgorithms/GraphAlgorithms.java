@@ -206,11 +206,12 @@ public class GraphAlgorithms {
         }
         D.put(v, 0);
 
-        Queue<V> Q = new PriorityQueue<V>((V a, V b) -> D.get(a) - D.get(b));
+        List<V> Q = new ArrayList<>();
         Q.addAll(graph.vertices());
+        Q.sort((V a, V b) -> D.get(a) - D.get(b));
 
         while (!Q.isEmpty()) {
-            V u = Q.poll();
+            V u = Q.remove(0);
             for (V z : graph.neighbors(u)) {
                 if (Q.contains(z)) {
                     int weightOfEdge = 0;
@@ -225,7 +226,7 @@ public class GraphAlgorithms {
 
                 }
             }
-
+            Q.sort((V a, V b) -> D.get(a) - D.get(b));
         }
 
         return D;
