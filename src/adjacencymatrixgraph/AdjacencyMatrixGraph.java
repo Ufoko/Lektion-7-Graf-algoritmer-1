@@ -15,7 +15,9 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
 
     //-----------------------------------------------------
 
-    /** Construct an empty AdjacencyMatrixGraph. */
+    /**
+     * Construct an empty AdjacencyMatrixGraph.
+     */
     public AdjacencyMatrixGraph(int matrixCapacity) {
         vertices = new LinkedHashMap<>();
         @SuppressWarnings("unchecked")
@@ -25,13 +27,17 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
         matrixSize = 0;
     }
 
-    /** Return a list with the vertices in the graph. */
+    /**
+     * Return a list with the vertices in the graph.
+     */
     @Override
     public List<V> vertices() {
         return new ArrayList<>(vertices.keySet());
     }
 
-    /** Return a list with the edges in the graph. */
+    /**
+     * Return a list with the edges in the graph.
+     */
     @Override
     public List<Edge<V>> edges() {
         Set<Edge<V>> edges = new HashSet();
@@ -39,8 +45,8 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
 
             for (int j = 0; j < matrixCapacity; j++) {
                 Edge<V> curEdge = matrix[i][0];
-                if(curEdge != null){
-                  edges.add(curEdge);
+                if (curEdge != null) {
+                    edges.add(curEdge);
                 }
             }
         }
@@ -57,17 +63,17 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
         int index = vertices.get(v);
         List<V> neighbourList = new ArrayList<>();
         for (int i = 0; i < matrixCapacity; i++) {
-           if( matrix[index][i] != null){
-               neighbourList.add(getVerticie(i));
-           }
+            if (matrix[index][i] != null) {
+                neighbourList.add(getVerticie(i));
+            }
         }
 
         return neighbourList;
     }
 
-    private V getVerticie(int index){
+    private V getVerticie(int index) {
         for (Map.Entry<V, Integer> vIntegerEntry : vertices.entrySet()) {
-            if(vIntegerEntry.getValue().equals(index)){
+            if (vIntegerEntry.getValue().equals(index)) {
                 return vIntegerEntry.getKey();
             }
         }
@@ -83,7 +89,7 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
         assert vertices.containsKey(v);
         int degree = 0;
         for (int i = 0; i < matrixCapacity; i++) {
-            if(matrix[vertices.get(v)][i] != null){
+            if (matrix[vertices.get(v)][i] != null) {
                 degree++;
             }
         }
@@ -100,7 +106,7 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
 
         List<Edge<V>> edges = new ArrayList<>();
         for (int i = 0; i < matrixCapacity; i++) {
-            if(matrix[vertices.get(v)][i] != null){
+            if (matrix[vertices.get(v)][i] != null) {
                 edges.add(matrix[vertices.get(v)][i]);
             }
         }
@@ -117,14 +123,16 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
     public boolean areAdjacent(V u, V v) {
         assert vertices.containsKey(v) && vertices.containsKey(u);
         for (int i = 0; i < matrixCapacity; i++) {
-            if(matrix[vertices.get(v)][vertices.get(u)] != null){
+            if (matrix[vertices.get(v)][vertices.get(u)] != null) {
                 return true;
             }
         }
         return false;
     }
 
-    /** Print the vertices and the edges. */
+    /**
+     * Print the vertices and the edges.
+     */
     @Override
     public void printGraph() {
         for (V v : vertices.keySet()) {
@@ -144,7 +152,7 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
     @Override
     public void addVertex(V v) {
         assert !vertices.containsKey(v);
-        vertices.put(v,matrixSize);
+        vertices.put(v, matrixSize);
         matrixSize++;
     }
 
@@ -161,7 +169,7 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
     public Edge<V> addEdge(V u, V v, int weight) {
         assert vertices.containsKey(v) && vertices.containsKey(u);
         assert weight >= 0;
-        Edge<V> tempEdge = new Edge<>(u,v,weight);
+        Edge<V> tempEdge = new Edge<>(u, v, weight);
 
         assert matrix[vertices.get(u)][vertices.get(v)] == tempEdge;
         assert matrix[vertices.get(v)][vertices.get(u)] == tempEdge;
@@ -178,7 +186,7 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
      */
     @Override
     public Edge<V> addEdge(V u, V v) {
-        return addEdge(u,v,0);
+        return addEdge(u, v, 0);
     }
 
     /**
@@ -188,19 +196,19 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
     @Override
     public void removeVertex(V v) {
         assert vertices.containsKey(v);
-            int row = vertices.get(v); // Get the row index from vertices
-            for (int i = 0; i < matrixCapacity; i++) {
-                assert matrix[row][i] == null : "Matrix element at [" + row + "][" + i + "] is not null";
-            }
+        int row = vertices.get(v); // Get the row index from vertices
+        for (int i = 0; i < matrixCapacity; i++) {
+            assert matrix[row][i] == null : "Matrix element at [" + row + "][" + i + "] is not null";
+        }
 
         vertices.remove(v);
-            matrixSize--;
+        matrixSize--;
     }
 
     /**
      * Remove the edge between the specified vertices from the graph.
      * Pre: The vertices are vertices in the graph,
-     *   and The graph has an edge between the vertices.
+     * and The graph has an edge between the vertices.
      */
     @Override
     public void removeEdge(V u, V v) {
